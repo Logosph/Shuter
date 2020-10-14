@@ -54,8 +54,9 @@ public class moving : MonoBehaviour
                 }
                 Vector3 movement = new Vector3(shift.normalized.x, 0, shift.normalized.y);
                 Player.transform.rotation = Quaternion.Euler(Player.transform.rotation.eulerAngles.x, (float)angle, Player.transform.rotation.eulerAngles.z);
-                Player.transform.Translate(movement * speed * Time.fixedDeltaTime);
-
+                //Player.transform.Translate(movement * speed * Time.fixedDeltaTime);
+                //Debug.Log(movement * speed * Time.fixedDeltaTime);
+                Player.transform.Translate(new Vector3(0, 0, 1) * speed * Time.fixedDeltaTime);
             }
 
         }
