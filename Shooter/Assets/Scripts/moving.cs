@@ -40,11 +40,19 @@ public class moving : MonoBehaviour
             }
 
             //Если провели по экрану
-            if (touch.position.x < Screen.width / 2 &&  touch.phase == TouchPhase.Moved)
+            if (touch.phase == TouchPhase.Moved)
             {
 
-                //Включаем анимацию ходьбы
                 anim.SetBool("walk", true);
+                //Включаем анимацию ходьбы или бега
+                if (rb.velocity.magnitude < speed * 2 / 3)
+                {
+                    anim.SetBool("run", false);
+                }
+                else if (rb.velocity.magnitude >= speed * 2 / 3)
+                {
+                    anim.SetBool("run", true);
+                }
                 Vector3 shift = new Vector3(touch.position.x, touch.position.y, transform.position.z) - transform.position;
 
                 //Перемещаем маркер нажатия куда надо
@@ -84,6 +92,7 @@ public class moving : MonoBehaviour
         {
             touchMarker.transform.position = transform.position + new Vector3(0, 0, -10);
             anim.SetBool("walk", false);
+            anim.SetBool("run", false);
             rb.velocity = new Vector3(0, 0, 0);
         }
         
