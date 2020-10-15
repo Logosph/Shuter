@@ -12,30 +12,43 @@ public class moving : MonoBehaviour
     public float speed;
 
     [HideInInspector]
+    public Animator anim;
+
+    [HideInInspector]
     public Rigidbody rb;
 
-    // Start is called before the first frame update
     void Start()
     {
+        transform.position = new Vector3(-100, -100, -100);
         touchMarker.transform.position = transform.position + new Vector3(0, 0, -10);
+        anim = Player.GetComponent<Animator>();
         rb = Player.GetComponent<Rigidbody>();
     }
 
-    // Update is called once per frame
     void FixedUpdate()
     {
-
+        //Если произошло нажатие
         if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
-            if (touch.position.x < Screen.width / 2 && touch.phase == TouchPhase.Began)
+
+            //Если было нажатие в левой части экрана
+            if (touch.position.x < Screen.width / 2 && (touch.phase == TouchPhase.Began))
             {
                 transform.position = touch.position;
             }
-            if (touch.phase == TouchPhase.Moved)
+
+            //Если провели по экрану
+            if (touch.position.x < Screen.width / 2 &&  touch.phase == TouchPhase.Moved)
             {
+
+                //Включаем анимацию ходьбы
+                anim.SetBool("walk", true);
                 Vector3 shift = new Vector3(touch.position.x, touch.position.y, transform.position.z) - transform.position;
+
+                //Перемещаем маркер нажатия куда надо
                 if (shift.magnitude <= length)
+
                 {
                     touchMarker.transform.position = touch.position;
                 }
@@ -43,22 +56,33 @@ public class moving : MonoBehaviour
                 {
                     touchMarker.transform.position = shift.normalized * length + transform.position;
                 }
+
+                //Находим угол поворота, поворачиваем человека и перемещаем его
                 double angle = Math.Atan(shift.normalized.y / shift.normalized.x)*180/Math.PI - 90;
+
+
                 if (angle < 0)
                 {
                     angle =  Math.Abs(angle);
                 }    
+
+
                 if (shift.x < 0)
                 {
                     angle += 180;
                 }
                 Vector3 movement = new Vector3(shift.normalized.x, 0, shift.normalized.y);
                 Player.transform.rotation = Quaternion.Euler(Player.transform.rotation.eulerAngles.x, (float)angle, Player.transform.rotation.eulerAngles.z);
-                //Player.transform.Translate(movement * speed * Time.fixedDeltaTime);
-                //Debug.Log(movement * speed * Time.fixedDeltaTime);
-                Player.transform.Translate(new Vector3(0, 0, 1) * speed * Time.fixedDeltaTime);
+                rb.velocity = movement * speed;
             }
-
         }
+        //Если нажатия нет то возвращаем маркер нажатия к джойстику и останавливаем человека.
+        else
+        {
+            touchMarker.transform.position = transform.position + new Vector3(0, 0, -10);
+            anim.SetBool("walk", false);
+            rb.velocity = new Vector3(0, 0, 0);
+        }
+        
     }
 }
