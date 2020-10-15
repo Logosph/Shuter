@@ -9,6 +9,7 @@ public class moving : MonoBehaviour
     public GameObject Player;
     public GameObject touchMarker;
     public float length;
+    public float accelerate;
     public float speed;
 
     [HideInInspector]
@@ -73,7 +74,9 @@ public class moving : MonoBehaviour
                 }
                 Vector3 movement = new Vector3(shift.normalized.x, 0, shift.normalized.y);
                 Player.transform.rotation = Quaternion.Euler(Player.transform.rotation.eulerAngles.x, (float)angle, Player.transform.rotation.eulerAngles.z);
-                rb.velocity = movement * speed;
+                rb.AddForce(movement * accelerate, ForceMode.Impulse);
+                if (rb.velocity.magnitude > speed)
+                    rb.velocity = movement * speed;
             }
         }
         //Если нажатия нет то возвращаем маркер нажатия к джойстику и останавливаем человека.
