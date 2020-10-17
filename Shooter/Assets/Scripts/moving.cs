@@ -40,7 +40,7 @@ public class moving : MonoBehaviour
             }
 
             //Если провели по экрану
-            if (touch.phase == TouchPhase.Moved)
+            if (touch.phase == TouchPhase.Moved && touch.position.x < Screen.width / 2)
             {
 
                 anim.SetBool("walk", true);
