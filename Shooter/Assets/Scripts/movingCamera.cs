@@ -13,6 +13,9 @@ public class movingCamera : MonoBehaviour
     public float Speed;
     public float angle;
 
+    [HideInInspector]
+    public bool isThrowing = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -22,21 +25,25 @@ public class movingCamera : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
-        if (toggle.isOn)
+        if (!isThrowing)
         {
-            shift = 0;
-            angle = 90;
-            
+            if (toggle.isOn)
+            {
+                shift = 0;
+                angle = 90;
+
+            }
+            else
+            {
+                shift = 80;
+                angle = 50;
+            }
+            transform.position = Vector3.Lerp(transform.position,
+                new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z - shift),
+                Speed * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(angle, 0, 0), Speed * Time.deltaTime);
+
         }
-        else
-        {
-            shift = 80;
-            angle = 50;
-        }
-        transform.position = Vector3.Lerp(transform.position,
-            new Vector3(player.transform.position.x, transform.position.y, player.transform.position.z - shift),
-            Speed * Time.deltaTime);
-        transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(angle, 0, 0), Speed * Time.deltaTime);
 
     }
 }

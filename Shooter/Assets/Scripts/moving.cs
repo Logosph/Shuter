@@ -18,6 +18,9 @@ public class moving : MonoBehaviour
     [HideInInspector]
     public Rigidbody rb;
 
+    [HideInInspector]
+    public bool isThrowing = false;
+
     void Start()
     {
         transform.position = new Vector3(-100, -100, -100);
@@ -29,7 +32,7 @@ public class moving : MonoBehaviour
     void FixedUpdate()
     {
         //Если произошло нажатие
-        if (Input.touchCount > 0)
+        if (Input.touchCount > 0 && !isThrowing)
         {
             Touch touch = Input.GetTouch(0);
 
@@ -42,17 +45,8 @@ public class moving : MonoBehaviour
             //Если провели по экрану
             if (touch.phase == TouchPhase.Moved && touch.position.x < Screen.width / 2)
             {
-
-                anim.SetBool("walk", true);
+                anim.SetBool("run", true);
                 //Включаем анимацию ходьбы или бега
-                if (rb.velocity.magnitude < speed * 2 / 3)
-                {
-                    anim.SetBool("run", false);
-                }
-                else if (rb.velocity.magnitude >= speed * 2 / 3)
-                {
-                    anim.SetBool("run", true);
-                }
                 Vector3 shift = new Vector3(touch.position.x, touch.position.y, transform.position.z) - transform.position;
 
                 //Перемещаем маркер нажатия куда надо
@@ -82,16 +76,20 @@ public class moving : MonoBehaviour
                 }
                 Vector3 movement = new Vector3(shift.normalized.x, 0, shift.normalized.y);
                 Player.transform.rotation = Quaternion.Euler(Player.transform.rotation.eulerAngles.x, (float)angle, Player.transform.rotation.eulerAngles.z);
-                rb.AddForce(movement * accelerate, ForceMode.Impulse);
-                if (rb.velocity.magnitude > speed)
+                rb.AddForce(movement * speed * accelerate);
+                if (rb.velocity.magnitude >= speed)
+                {
                     rb.velocity = movement * speed;
+                }
+
+
             }
         }
         //Если нажатия нет то возвращаем маркер нажатия к джойстику и останавливаем человека.
         else
         {
+            transform.position = new Vector3(-100, -100, -100);
             touchMarker.transform.position = transform.position + new Vector3(0, 0, -10);
-            anim.SetBool("walk", false);
             anim.SetBool("run", false);
             rb.velocity = new Vector3(0, 0, 0);
         }
