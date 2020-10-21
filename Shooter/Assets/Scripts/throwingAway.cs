@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Security.Cryptography;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -33,6 +34,17 @@ public class throwingAway : MonoBehaviour
         camSc = camera.GetComponent<movingCamera>();
     }
 
+    void FixedUpdate()
+    {
+        if (isPressed)
+        {
+            camera.transform.position = Vector3.Lerp(transform.position,
+                 new Vector3(camSc.player.transform.position.x, camera.transform.position.y, camSc.player.transform.position.z),
+                 Speed * Time.deltaTime);
+            camera.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(180, 0, 0), Speed * Time.deltaTime);
+        }
+    }
+
     public void Throwing()
     {
         if (invSc.selected != 0 && !isPressed)
@@ -40,7 +52,6 @@ public class throwingAway : MonoBehaviour
             joystickSc.isThrowing = true;
             camSc.isThrowing = true;
             isPressed = true;
-            camera.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(90, 0, 0), Speed * Time.deltaTime);
         }
     }
 }

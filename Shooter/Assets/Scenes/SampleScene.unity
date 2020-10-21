@@ -271,7 +271,7 @@ MonoBehaviour:
   camera: {fileID: 963194225}
   inventory: {fileID: 1321159109}
   toggle: {fileID: 652840436}
-  Speed: 2
+  Speed: 1
   joystickSc: {fileID: 0}
   invSc: {fileID: 0}
   camSc: {fileID: 0}
