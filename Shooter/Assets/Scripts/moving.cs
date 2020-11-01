@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Security.Cryptography;
 using UnityEngine;
 
@@ -18,12 +19,10 @@ public class moving : MonoBehaviour
     [HideInInspector]
     public Rigidbody rb;
 
-    [HideInInspector]
-    public bool isThrowing = false;
-
     void Start()
     {
-        transform.position = new Vector3(-100, -100, -100);
+        transform.localScale = new Vector3(Screen.width / 200 / 3, Screen.width / 200 / 3, 1);
+        transform.position = new Vector3(Screen.width * 0.15f, Screen.height * 0.3f, 0);
         touchMarker.transform.position = transform.position + new Vector3(0, 0, -10);
         anim = Player.GetComponent<Animator>();
         rb = Player.GetComponent<Rigidbody>();
@@ -32,14 +31,14 @@ public class moving : MonoBehaviour
     void FixedUpdate()
     {
         //Если произошло нажатие
-        if (Input.touchCount > 0 && !isThrowing)
+        if (Input.touchCount > 0)
         {
             Touch touch = Input.GetTouch(0);
 
             //Если было нажатие в левой части экрана
             if (touch.position.x < Screen.width / 2 && (touch.phase == TouchPhase.Began))
             {
-                transform.position = touch.position;
+                //transform.position = touch.position;
             }
 
             //Если провели по экрану
@@ -88,7 +87,6 @@ public class moving : MonoBehaviour
         //Если нажатия нет то возвращаем маркер нажатия к джойстику и останавливаем человека.
         else
         {
-            transform.position = new Vector3(-100, -100, -100);
             touchMarker.transform.position = transform.position + new Vector3(0, 0, -10);
             anim.SetBool("run", false);
             rb.velocity = new Vector3(0, 0, 0);

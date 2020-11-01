@@ -21,8 +21,6 @@ public class throwingAway : MonoBehaviour
     public Inventory invSc;
     [HideInInspector]
     public movingCamera camSc;
-    [HideInInspector]
-    public bool isPressed = false;
 
     // Start is called before the first frame update
     void Start()
@@ -34,24 +32,22 @@ public class throwingAway : MonoBehaviour
         camSc = camera.GetComponent<movingCamera>();
     }
 
-    void FixedUpdate()
-    {
-        if (isPressed)
-        {
-            camera.transform.position = Vector3.Lerp(transform.position,
-                 new Vector3(camSc.player.transform.position.x, camera.transform.position.y, camSc.player.transform.position.z),
-                 Speed * Time.deltaTime);
-            camera.transform.rotation = Quaternion.Lerp(transform.rotation, Quaternion.Euler(180, 0, 0), Speed * Time.deltaTime);
-        }
-    }
-
     public void Throwing()
     {
-        if (invSc.selected != 0 && !isPressed)
+        if (invSc.selected != 0)
         {
-            joystickSc.isThrowing = true;
-            camSc.isThrowing = true;
-            isPressed = true;
+            invSc.inventoryArray[invSc.selected - 1].transform.position = 
+                new Vector3(camSc.player.transform.position.x,
+                1,
+                camSc.player.transform.position.z);
+            invSc.inventoryArray[invSc.selected - 1].GetComponent<settingObject>().canvas.transform.position =
+                invSc.inventoryArray[invSc.selected - 1].transform.position + 
+                new Vector3(0, invSc.inventoryArray[invSc.selected - 1].GetComponent<triggeringObjects>().radius * 10, 0);
+            invSc.inventoryArray[invSc.selected - 1].GetComponent<settingObject>().button.GetComponent<pickUping>().icon.transform.position = 
+                new Vector3(-100, -100, -100);
+            invSc.inventoryArray[invSc.selected - 1] = invSc.GO;
+            invSc.selected = 0;
         }
+
     }
 }
